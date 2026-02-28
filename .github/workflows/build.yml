@@ -1,43 +1,65 @@
 name: Build U-Boot and Linux for QEMU
-on: 
-  pull_request:
+
+on:
   push:
-    branches: ["main", "dev"]
+  pull_request:
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
+    env:
+      CROSS_COMPILE: aarch64-linux-gnu-
+      ARCH: arm64
+
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      - name: Install Dependencies
+      - name: Install dependencies
         run: |
-          sudo apt-get update
-          sudo apt-get install -y gcc-arm-linux-gnueabihf make bison flex libssl-dev libncurses5-dev bc qemu-system-arm libgnutls-dev pkg-config
+          sudo apt update
+          sudo apt install -y \
+            gcc-aarch64-linux-gnu \
+            make \
+            bc \
+            flex \
+            bison \
+            libssl-dev \
+            qemu-system-arm \
+            qemu-system-aarch64 \
+            device-tree-compiler
 
-      - name: Build U-Boot
+      # =========================
+      # Build U-Boot
+      # =========================
+      - name: Clone U-Boot
         run: |
-          git clone --depth 1 https://source.denx.de/u-boot/u-boot.git
+          git clone https://github.com/u-boot/u-boot.git
           cd u-boot
-          make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- vexpress_ca9x4_defconfig
-          make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- -j$(nproc)
-          cp u-boot ../u-boot-bin
+          make qemu_arm64_defconfig
+          make -j$(nproc)
 
-      - name: Build Linux Kernel
+      # =========================
+      # Build Linux Kernel
+      # =========================
+      - name: Clone Linux Kernel
         run: |
-          git clone --depth 1 https://git.kernel.org
+          git clone --depth=1 https://github.com/torvalds/linux.git
           cd linux
-          make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- vexpress_defconfig
-          make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- zImage dtbs -j$(nproc)
-          cp arch/arm/boot/zImage ../zImage
-          cp arch/arm/boot/dts/vexpress-v2p-ca9.dtb ../vexpress.dtb
+          make defconfig
+          make -j$(nproc)
 
-      - name: Upload Artifacts
+      # =========================
+      # Collect Artifacts
+      # =========================
+      - name: Collect build outputs
+        run: |
+          mkdir artifacts
+
+          cp u-boot/u-boot.bin artifacts/
+          cp linux/arch/arm64/boot/Image artifacts/
+          cp linux/arch/arm64/boot/dts/*.dtb artifacts/
+
+      - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: qemu-images
-          path: |
-            u-boot-bin
-            zImage
-            vexpress.dtb
+          name: arm64-build
+          path: artifacts

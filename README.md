@@ -10,6 +10,13 @@ gh run view <run-id> --logs
 </pre>
 
 <pre>
+
+          name: qemu-images
+          path: |
+            u-boot-bin
+            zImage
+            vexpress.dtb
+
 1. 暫存更改 (Stage Changes) 
 在 VS Code 左側活動欄點擊 原始碼控制 圖標（圖標看起來像一個分支節點，快捷鍵 Ctrl+Shift+G）。 
 Graphite
