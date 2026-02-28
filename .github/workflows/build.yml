@@ -15,7 +15,7 @@ jobs:
 
       - name: Build U-Boot
         run: |
-          git clone --depth 1 https://github.com
+          git clone --depth 1 https://source.denx.de/u-boot/u-boot.git
           cd u-boot
           make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- vexpress_ca9x4_defconfig
           make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- -j$(nproc)
