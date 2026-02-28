@@ -6,7 +6,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: [actions/checkout@v4](https://github.com/actions/checkout)
+        uses: actions/checkout@v4
 
       - name: Install Dependencies
         run: |
@@ -31,7 +31,7 @@ jobs:
           cp arch/arm/boot/dts/vexpress-v2p-ca9.dtb ../vexpress.dtb
 
       - name: Upload Artifacts
-        uses: [actions/upload-artifact@v4](https://github.com/actions/upload-artifact)
+        uses: actions/upload-artifact@v4
         with:
           name: qemu-images
           path: |
