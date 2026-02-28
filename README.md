@@ -1,5 +1,13 @@
 # build-uboot-linux
 
+<pre>
+winget install GitHub.cli
+gh auth login
+gh workflow list
+gh workflow run <workflow_file.yml>
+gh run list
+gh run view <run-id> --logs
+</pre>
 
 <pre>
 1. 暫存更改 (Stage Changes) 
