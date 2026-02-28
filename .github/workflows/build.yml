@@ -25,7 +25,8 @@ jobs:
             libssl-dev \
             qemu-system-arm \
             qemu-system-aarch64 \
-            device-tree-compiler
+            device-tree-compiler \
+            libgnutls28-dev 
 
       # =========================
       # Build U-Boot
