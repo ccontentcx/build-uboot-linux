@@ -1,71 +1,51 @@
-name: Build U-Boot and Linux for QEMU
+name: Buildroot QEMU CI
 
-on:
-  push:
-  pull_request:
+on: [push, pull_request, workflow_dispatch]
 
 jobs:
-  build:
+  build-qemu:
     runs-on: ubuntu-latest
-
-    env:
-      CROSS_COMPILE: aarch64-linux-gnu-
-      ARCH: arm64
-
     steps:
-      - name: Install dependencies
-        run: |
-          sudo apt update
-          sudo apt install -y \
-            gcc-aarch64-linux-gnu \
-            make \
-            bc \
-            flex \
-            bison \
-            libssl-dev \
-            qemu-system-arm \
-            qemu-system-aarch64 \
-            device-tree-compiler \
-            libgnutls28-dev 
-
-      # =========================
-      # Build U-Boot
-      # =========================
-      - name: Clone U-Boot
-        run: |
-          git clone https://github.com/u-boot/u-boot.git
-          cd u-boot
-          make qemu_arm64_defconfig
-          make -j$(nproc)
-
-      # =========================
-      # Build Linux Kernel
-      # =========================
-      - name: Clone Linux Kernel
-        run: |
-          git clone --depth=1 https://github.com/torvalds/linux.git
-          cd linux
-          make defconfig
-          make -j$(nproc)
-
-
-      - name: Check space usage
-        if: (!cancelled())
-        run: df -hT
-
-      # =========================
-      # Collect Artifacts
-      # =========================
-      - name: Collect build outputs
-        run: |
-          mkdir artifacts
-
-          cp u-boot/u-boot.bin artifacts/
-          cp linux/arch/arm64/boot/Image artifacts/
-          cp linux/arch/arm64/boot/dts/*.dtb artifacts/
-
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
+      - name: Checkout Buildroot
+        uses: actions/checkout@v4
         with:
-          name: arm64-build
-          path: artifacts
+          repository: 'buildroot/buildroot'
+          fetch-depth: 1
+
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential gettext libncurses5-dev \
+            file wget cpio python3 unzip rsync qemu-system-arm
+
+      - name: Cache Downloads
+        uses: actions/cache@v4
+        with:
+          path: dl/
+          key: buildroot-dl-${{ hashFiles('Config.in') }}
+
+      - name: Configure Buildroot
+        run: make qemu_aarch64_virt_defconfig
+
+      - name: Build
+        # 使用 nproc 跑滿 CPU，但預留 1 核避免系統鎖死
+        run: make -j$(nproc)
+
+      - name: Run Test in QEMU
+        run: |
+          # 使用 expect 或簡單腳本模擬自動啟動與關機
+          # 這裡示範啟動後等待 login 出現，並執行 uname -a 後關機
+          ./output/images/start-qemu.sh serial-only <<EOF
+          root
+          uname -a
+          poweroff
+          EOF
+
+      - name: Upload Build Images
+        uses: [actions/upload-artifact](https://github.com)@v4
+        with:
+          name: buildroot-qemu-images
+          path: |
+            output/images/Image
+            output/images/rootfs.ext2
+            output/images/start-qemu.sh

@@ -1,0 +1,71 @@
+name: Build U-Boot and Linux for QEMU
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    env:
+      CROSS_COMPILE: aarch64-linux-gnu-
+      ARCH: arm64
+
+    steps:
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y \
+            gcc-aarch64-linux-gnu \
+            make \
+            bc \
+            flex \
+            bison \
+            libssl-dev \
+            qemu-system-arm \
+            qemu-system-aarch64 \
+            device-tree-compiler \
+            libgnutls28-dev 
+
+      # =========================
+      # Build U-Boot
+      # =========================
+      - name: Clone U-Boot
+        run: |
+          git clone https://github.com/u-boot/u-boot.git
+          cd u-boot
+          make qemu_arm64_defconfig
+          make -j$(nproc)
+
+      # =========================
+      # Build Linux Kernel
+      # =========================
+      - name: Clone Linux Kernel
+        run: |
+          git clone --depth=1 https://github.com/torvalds/linux.git
+          cd linux
+          make defconfig
+          make -j$(nproc)
+
+
+      - name: Check space usage
+        if: (!cancelled())
+        run: df -hT
+
+      # =========================
+      # Collect Artifacts
+      # =========================
+      - name: Collect build outputs
+        run: |
+          mkdir artifacts
+
+          cp u-boot/u-boot.bin artifacts/
+          cp linux/arch/arm64/boot/Image artifacts/
+          cp linux/arch/arm64/boot/dts/*.dtb artifacts/
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: arm64-build
+          path: artifacts
