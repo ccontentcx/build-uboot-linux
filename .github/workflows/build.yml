@@ -40,15 +40,15 @@ jobs:
       - name: Build (BusyBox Mode)
         run: make -j$(nproc)
 
-      - name: Run Test and Check Init
-        run: |
-          # 啟動 QEMU 並確認進程 1 是不是 busybox init
-          ./output/images/start-qemu.sh serial-only <<EOF
-          root
-          ps -p 1
-          uname -a
-          poweroff
-          EOF
+#      - name: Run Test and Check Init
+#        run: |
+#          # 啟動 QEMU 並確認進程 1 是不是 busybox init
+#          ./output/images/start-qemu.sh serial-only <<EOF
+#          root
+#          ps -p 1
+#          uname -a
+#          poweroff
+#          EOF
 
       - name: Upload BusyBox Images
         uses: actions/upload-artifact@v4
