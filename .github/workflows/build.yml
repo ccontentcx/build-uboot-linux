@@ -1,4 +1,4 @@
-name: Buildroot QEMU CI
+name: Build U-Boot and Linux for QEMU
 
 on: [push, pull_request, workflow_dispatch]
 
