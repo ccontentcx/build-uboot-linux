@@ -42,7 +42,7 @@ jobs:
           EOF
 
       - name: Upload Build Images
-        uses: [actions/upload-artifact](https://github.com)@v4
+        uses: actions/upload-artifact@v4
         with:
           name: buildroot-qemu-images
           path: |
