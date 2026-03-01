@@ -7,6 +7,16 @@ gh workflow list
 gh workflow run <workflow_file.yml>
 gh run list
 gh run view <run-id> --logs
+
+
+fork
+自己改 driver
+改 memory layout
+改 board init
+改 device tree
+加 debug log
+改 relocation
+CI 才真正有意義。
 </pre>
 
 <pre>

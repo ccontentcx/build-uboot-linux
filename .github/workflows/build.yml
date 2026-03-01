@@ -48,6 +48,11 @@ jobs:
           make defconfig
           make -j$(nproc)
 
+
+      - name: Check space usage
+        if: (!cancelled())
+        run: df -hT
+
       # =========================
       # Collect Artifacts
       # =========================
