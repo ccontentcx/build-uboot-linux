@@ -3,6 +3,7 @@
 
 <pre>
 
+    apt list --manual-installed
 在现代开发中，
     sudo apt install global       ---------------->        gtags -v    ---->  F1 -----> Global: Rebuild Gtags Database
 LSP (Language Server Protocol) 确实已经取代了传统标签系统（Tags），成为了绝大多数开发者的“主流”选择
