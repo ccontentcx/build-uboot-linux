@@ -1,0 +1,115 @@
+not eth.addr == 00:25:D3:89:A2:9A and  eth.addr == 28:cd:c1:09:37:d3
+
+检查 2.4 GHz 信道（1-13），观察信号强度（dBm，-30 优于 -80）和信道重叠
+功能：生成信号热图，显示信道拥塞、信号强度。
+捕获 Wi-Fi Beacon 帧，统计每个信道的网络数量和平均信号强度。
+检测非 Wi-Fi 数据包（如 nRF24L01、蓝牙），提示潜在干扰。
+
+
+
+麦克斯韦方程组由四个微分方程组成，它们完美地统一了电场、磁场和电荷，并且预言了电磁波的存在，也就是光。这些方程是电磁学的基石，也是现代物理学最重要的成就之一。
+波函数 薛定谔方程
+
+描述了电磁波的产生、传播和接收过程，是天线设计和通信系统优化的核心。 
+专业词汇要用专业英语备注
+
+1. 先用“需求三角”锁定范围
+
+输入电压范围（Vin min / Vin max）
+
+输出电压 & 电流（Vout / Iout）
+
+效率目标或功率损耗限制（>85% / <0.5W 发热）
+qweTYYTYYUIOP[[]ASDFGHJKL;'ZXCVBNM,./  123454667890ZVVVV
+
+
+
+麦克斯韦方程组中的数学
+理解麦克斯韦方程组需要一些高级的数学概念，主要包括：
+
+矢量微积分 (Vector Calculus)：这是描述电场和磁场在空间中如何分布和变化的数学工具。它包括：
+
+梯度（Gradient）：描述标量场（如电势）在空间中变化最快的方向和大小。
+
+散度（Divergence）：描述一个矢量场（如电场）从某个点向外发散或汇聚的程度。例如，高斯定律就是用散度来描述电荷如何产生电场。
+
+旋度（Curl）：描述一个矢量场（如电场或磁场）在某个点旋转的程度。例如，法拉第电磁感应定律和安培-麦克斯韦定律就是用旋度来描述变化的磁场如何产生电场，以及变化的电场和电流如何产生磁场。
+
+偏微分方程 (Partial Differential Equations, PDEs)：麦克斯韦方程组本身就是一组偏微分方程。这些方程描述了电场和磁场如何随时间和空间的变化而演化。从这些方程中可以推导出波动方程，这个方程的解就是电磁波，也就是光。
+
+积分定理 (Integral Theorems)：为了将麦克斯韦的微分形式方程应用到更广泛的场景中，我们还需要用到一些积分定理，例如：
+
+高斯定理（Gauss's Theorem）：将场的散度积分与穿过闭合曲面的通量联系起来。
+
+斯托克斯定理（Stokes' Theorem）：将场的旋度积分与沿闭合路径的线积分联系起来。
+
+其他相关的数学领域
+除了麦克斯韦方程组的核心数学，理解和应用电磁学还会用到其他数学分支：
+
+复数 (Complex Numbers)：在处理交流电（AC）电路时非常有用。利用复数可以大大简化电路中电压、电流和阻抗的计算。
+
+傅里叶分析 (Fourier Analysis)：用来将复杂的电磁波信号分解成不同频率的简单正弦波。这在信号处理、通信和光谱学等领域至关重要。
+
+张量分析 (Tensor Analysis)：在更广义的相对论框架下，需要用张量来描述电磁场，例如电磁场张量。
+
+
+
+
+adb install
+
+buildozer -v android debug
+
+buildozer android deploy run logcat
+
+
+from kivy.app import App
+from kivy.uix.togglebutton import ToggleButton
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.label import Label
+from kivy.core.text import LabelBase
+
+# 注册字体
+LabelBase.register(
+    name="my_font", 
+    fn_regular="C:\\Users\chuuong\\Desktop\\msyhl.ttc"  # 修改为你字体的路径
+)
+
+class ToggleButtonApp(App):
+    def build(self):
+        # 创建布局
+        layout = BoxLayout(orientation='vertical')
+        
+        # 创建标签显示状态
+        self.status_label = Label(text="按钮状态: 关闭", font_name="my_font")
+        
+        # 创建 ToggleButton
+        toggle_button = ToggleButton(
+            text="点击切换", 
+            state='normal',  # 初始状态
+            size_hint=(None, None), 
+            size=(200, 100),
+            font_name="my_font"  # 设置字体
+        )
+        
+        # 当按钮状态改变时调用 update_status
+        toggle_button.bind(on_press=self.update_status)
+        
+        # 将组件添加到布局
+        layout.add_widget(self.status_label)
+        layout.add_widget(toggle_button)
+        
+        return layout
+
+    def update_status(self, instance):
+        # 更新标签显示按钮的状态
+        if instance.state == 'down':
+            self.status_label.text = "按钮状态: 开启"
+        else:
+            self.status_label.text = "按钮状态: 关闭"
+
+if __name__ == "__main__":
+    ToggleButtonApp().run()
+
+
+
+
