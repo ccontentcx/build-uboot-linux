@@ -17,8 +17,77 @@ make  CROSS_COMPILE=aarch64-linux-gnu- rpi_4_defconfig
 # 3. 正式編譯
 make  CROSS_COMPILE=aarch64-linux-gnu- -j$(nproc)
 
-    
+config.txt
+    ------->
+        arm_64bit=1
+        enable_uart=1
+        kernel=u-boot.bin
 
+編譯成功後，最重要的檔案通常就在根目錄下：
+
+    u-boot.bin：這是最原始的二進位檔案，也是樹莓派 4 最常使用的檔案。
+    u-boot：這是包含符號表的 ELF 格式檔案，可用於除錯。
+    u-boot.cfg：目前的編譯配置摘要。
+
+3. 其他重要組件
+根據您的編譯配置，可能還會看到：
+
+    arch/arm/dts/*.dtb：編譯出的設備樹檔案（Device Tree Blobs）。
+    tools/mkimage：這是一個非常有用的工具，後續若要製作自定義引導鏡像會用到。
+
+sudo apt-get install qemu-system-arm
+
+    qemu-system-aarch64 \
+    -M raspi4b \
+    -display none \
+    -serial stdio \
+    -kernel u-boot.bin \
+    -dtb arch/arm/dts/bcm2711-rpi-4-b.dtb
+
+    | grep -i "RASPI"
+
+qemu-system-aarch64 -M help
+
+
+
+    
+2. mkimage 具體做了什麼？
+當你使用 mkimage 時，它會在原始文件（如 zImage）前面加上一個 64 字節的 Header（信頭）： 
+
+    記錄身份：標註這是 Linux 內核、ARM 架構、是否壓縮等。
+    指定位置：告訴 U-Boot 鏡像應該加載到內存的哪個地址（Load Address）以及從哪裡開始執行（Entry Point）。
+    校驗安全：生成 CRC 效驗碼，確保文件在傳輸或燒錄過程中沒有損壞。 
+
+3. 常見的應用場景
+
+    製作 uImage：將 Linux 的 zImage 轉換為 U-Boot 專用的 uImage。
+    製作 FIT Image：現代化的打包方式，將內核、設備樹、多個配置全部打包成一個文件（.itb），並支持簽名加密以實現安全啟動 (Secure Boot)。 
+
+
+
+
+    重新編譯 U-Boot（針對 virt 平台）：
+bash
+
+make distclean
+make CROSS_COMPILE=aarch64-linux-gnu- qemu_arm64_defconfig
+make CROSS_COMPILE=aarch64-linux-gnu- -j$(nproc)
+
+Use code with caution.
+執行模擬：
+bash
+
+qemu-system-aarch64 \
+    -M virt \
+    -cpu cortex-a72 \
+    -display none \
+    -serial stdio \
+    -bios u-boot.bin
+
+
+
+
+    
 apt list --manual-installed
 在现代开发中，
     sudo apt install global       ---------------->        gtags -v    ---->  F1 -----> Global: Rebuild Gtags Database
