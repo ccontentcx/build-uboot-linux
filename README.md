@@ -86,6 +86,87 @@ qemu-system-aarch64 \
 
 
 
+    查看硬體資訊 (最基本的儀式感)
+這可以讓你看到 U-Boot 辨識出的虛擬硬體參數。
+
+    bdinfo：查看板卡資訊（記憶體位址、乙太網路 MAC 等）。
+    printenv：列出所有環境變數。這是 U-Boot 的靈魂，決定了它如何啟動系統。
+    version：查看編譯版本與工具鏈資訊。
+
+2. 玩轉記憶體 (底層工程師必備)
+你可以直接讀寫 RAM 位址，這在除錯時非常有用。
+
+    md 0x40000000 0x10：讀取（Memory Display）特定位址的內容。
+    mw 0x40000000 0x12345678：寫入（Memory Write）一個數值到記憶體。
+    nm 0x40000000：進入互動模式修改記憶體內容（輸入新值後按 Enter）。
+
+3. 測試虛擬網路 (如果 QEMU 有設定)
+試試看能不能與外界通訊：
+
+    ping 192.168.1.1：(需配合 QEMU 網路參數設定) 測試網路協議棧是否正常運作。
+
+4. 練習修改啟動流程 (最實用的技能)
+你可以修改 bootdelay（倒數時間）或自定義指令：
+
+    setenv bootdelay 10：把啟動倒數改長一點。
+    setenv my_hello "echo Hello World from U-Boot!"：自定義變數。
+    run my_hello：執行自定義指令。
+    saveenv：將修改永久存檔（但在 QEMU 沒掛載虛擬 Flash 的情況下可能會失敗）。
+
+
+
+ U-Boot 命令需要手動輸入或寫死在源代碼中，非常不靈活。有了 boot.scr，你只需要修改這個文件，就能改變啟動行為（例如切換不同的操作系統或開啟偵錯模式），而不需要重新編譯整個 U-Boot。
+
+與 mkimage 的關係
+這就是為什麼你之前會看到 mkimage 這個工具。
+
+    原始文件：通常叫 boot.cmd，是一個純文字檔，裡面寫滿了 U-Boot 命令（如 fatload、setenv、bootz）。
+    轉換過程：U-Boot 為了安全和識別，不能直接讀取純文字。你需要用 mkimage 工具給它加上一個 64 字節的 Header（信頭）。
+    生成結果：轉換後的二進位文件就是 boot.scr
+
+常見的製作流程
+
+    編寫 boot.cmd（內容範例）：
+    bash
+
+    fatload mmc 0:1 0x80800000 zImage
+    fatload mmc 0:1 0x83000000 sun8i-v3s-sidewinder.dtb
+    setenv bootargs console=ttyS0,115200 root=/dev/mmcblk0p2 rootwait panic=10
+    bootz 0x80800000 - 0x83000000
+
+    Use code with caution.
+    使用 mkimage 封裝：
+    bash
+
+    mkimage -C none -A arm -T script -d boot.cmd boot.scr
+
+    Use code with caution.
+     
+
+4. 總結其作用
+
+    自動化：開機後自動執行一連串指令，無需人工干預。
+    靈活性：支援 A/B 分區切換、多重引導（Multi-boot）等複雜邏輯。
+    通用性：讓同一個 U-Boot 鏡像能透過不同的 boot.scr 啟動不同的 Linux 發行版。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
 
     
 apt list --manual-installed
