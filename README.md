@@ -1,4 +1,15 @@
 # build-uboot-linux
+
+
+<pre>
+
+在现代开发中，
+    sudo apt install global       ---------------->        gtags -v    ---->  F1 -----> Global: Rebuild Gtags Database
+LSP (Language Server Protocol) 确实已经取代了传统标签系统（Tags），成为了绝大多数开发者的“主流”选择
+-----------------------------------------------------------------------------------------------------------
+</pre>
+
+
 <pre>
 
 Bionic vs. glibc: Android 甚至連你提到的 glibc 都換掉了，改用 Google 自己寫的 Bionic C Library。
