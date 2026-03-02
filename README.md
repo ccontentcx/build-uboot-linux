@@ -3,6 +3,22 @@
 
 <pre>
 
+
+
+sudo apt-get install gcc-aarch64-linux-gnu
+sudo apt-get install libgnutls28-dev bc bison flex libssl-dev make
+
+# 1. 徹底清除之前的編譯快取
+make distclean
+
+# 2. 設定樹莓派 4 的預設配置 (64位元)
+make  CROSS_COMPILE=aarch64-linux-gnu- rpi_4_defconfig
+
+# 3. 正式編譯
+make  CROSS_COMPILE=aarch64-linux-gnu- -j$(nproc)
+
+    
+
 apt list --manual-installed
 在现代开发中，
     sudo apt install global       ---------------->        gtags -v    ---->  F1 -----> Global: Rebuild Gtags Database
