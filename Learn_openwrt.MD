@@ -1,4 +1,4 @@
-    <pre>
+<pre>
       make distclean
       1. 使用 make clean 代替
         如果你只是想清除舊的編譯結果來重新編譯，請只用 make clean。它會保留你的 .config 和所有已下載的 Feeds，只刪除編譯產出的二進位檔。
@@ -8,4 +8,4 @@
       你可以執行以下指令看看哪些 Feeds 是「已安裝（已連結）」的：
       bash
         ./scripts/feeds list -i
-    </pre>
+</pre>
