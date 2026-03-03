@@ -57,4 +57,16 @@ DPDK 為什麼比 musl-libc/Kernel 快？
     它不支援普通的 socket 程式：你得重新學習一套 API。
     佔用 CPU：為了快，它會 100% 佔滿分配給它的 CPU 核心。
     環境要求：OpenWrt 雖然能跑 DPDK，但通常需要比較強悍的 x86 硬體或特定的 ARM 平台（如 NXP LS 系列）。
+
+
+
+
+
+
+
+在 MTK 7981 上，你的最佳姿勢是開啟 OpenWrt 的 Software/Hardware Flow Offload，而不是折騰 DPDK。
+如果你非要對數據包做「攔截與修改」：
+
+    輕量級：用 ebpf (XDP)。它比 DPDK 更現代，能直接在核心裡跑，且 MTK 7981 的新核心版本對它支援越來越好。
+    暴力級：換一台 Intel 網卡的 x86 主機 裝 OpenWrt。
 </pre>
