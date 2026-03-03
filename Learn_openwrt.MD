@@ -3,6 +3,13 @@
 
 
 
+      # 1. 安裝編譯目標
+rustup target add aarch64-unknown-linux-musl
+
+# 2. 編譯（產生出極小且獨立的執行檔）
+cargo build --target aarch64-unknown-linux-musl --release
+
+
 
       make distclean
       1. 使用 make clean 代替
