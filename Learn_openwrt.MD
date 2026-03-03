@@ -7,5 +7,5 @@
 
       你可以執行以下指令看看哪些 Feeds 是「已安裝（已連結）」的：
       bash
-./scripts/feeds list -i
+        ./scripts/feeds list -i
     </pre>
